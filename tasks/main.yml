@@ -1,0 +1,19 @@
+---
+- name: Switch to using FQDN hostnames
+  ansible.builtin.replace:
+    path: /etc/skel/.bashrc
+    regexp: '\\h'
+    replace: '$(hostname -f)'
+
+- name: Get list of all usernames to fix existing .bashrc files
+  changed_when: false
+  shell: ls /home/*/.bashrc /root/.bashrc
+  register: _bashrc
+
+- name: Fix FQDN hostnames for existing users
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '\\h'
+    replace: '$(hostname -f)'
+  loop: "{{ _bashrc.stdout_lines }}"
+...
