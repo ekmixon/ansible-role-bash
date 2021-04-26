@@ -11,6 +11,7 @@
   register: _bashrc
 
 - name: Fix FQDN hostnames for existing users
+  become: true
   ansible.builtin.replace:
     path: "{{ item }}"
     regexp: '\\h'
